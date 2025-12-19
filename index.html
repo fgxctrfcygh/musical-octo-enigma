@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Counter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --bg-color: #f5f3ff;
+            --text-color: #2d3436;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(108, 92, 231, 0.2);
+            --button-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        body.dark-mode {
+            --primary-color: #9d84ff;
+            --secondary-color: #6c5ce7;
+            --accent-color: #ff6fa5;
+            --bg-color: #1a1a2e;
+            --text-color: #eee;
+            --card-bg: #16213e;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --button-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--button-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .result {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .result.animate {
+            animation: countAnimation 0.3s ease;
+        }
+
+        @keyframes countAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--accent-color), #e84393);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--button-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(253, 121, 168, 0.4);
+        }
+
+        .theme-controls {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .theme-btn:hover::before {
+            left: 100%;
+        }
+
+        .theme-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary-color);
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .result {
+                font-size: 2rem;
+            }
+            
+            .box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <h1 class="title">Counter</h1>
+        
+        <div class="box">
+            <div class="counter-controls">
+                <button id="plus" class="btn">+</button>
+                <p id="result" class="result">0</p>
+                <button id="minus" class="btn">-</button>
+            </div>
+            
+            <button id="reset" class="reset-btn">Reset</button>
+        </div>
+        
+        <div class="theme-controls">
+            <button id="switch" class="theme-btn">Switch Theme</button>
+            <button id="light1" class="theme-btn">Special Effect</button>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // DOM Elements
+        const resultElement = document.getElementById('result');
+        const plusButton = document.getElementById('plus');
+        const minusButton = document.getElementById('minus');
+        const resetButton = document.getElementById('reset');
+        const switchButton = document.getElementById('switch');
+        const light1Button = document.getElementById('light1');
+        const body = document.body;
+        const toast = document.getElementById('toast');
+        const particlesContainer = document.getElementById('particles');
+        
+        // State
+        let count = 0;
+        let isDarkMode = false;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            updateCounter();
+        });
+        
+        // Functions
+        function updateCounter() {
+            resultElement.textContent = count;
+            resultElement.classList.add('animate');
+            
+            setTimeout(() => {
+                resultElement.classList.remove('animate');
+            }, 300);
+            
+            // Change color based on value
+            if (count > 0) {
+                resultElement.style.color = 'var(--accent-color)';
+            } else if (count < 0) {
+                resultElement.style.color = '#e17055';
+            } else {
+                resultElement.style.color = 'var(--primary-color)';
+            }
+        }
+        
+        function increment() {
+            count++;
+            updateCounter();
+            createFloatingParticle(plusButton);
+        }
+        
+        function decrement() {
+            count--;
+            updateCounter();
+            createFloatingParticle(minusButton);
+        }
+        
+        function reset() {
+            count = 0;
+            updateCounter();
+            showToast('Counter reset!');
+        }
+        
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            body.classList.toggle('dark-mode');
+            showToast(isDarkMode ? 'Dark mode activated!' : 'Light mode activated!');
+        }
+        
+        function specialEffect() {
+            // Create a burst of particles
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createRandomParticle();
+                }, i * 50);
+            }
+            
+            // Flash effect
+            body.style.transition = 'none';
+            body.style.filter = 'brightness(1.5)';
+            
+            setTimeout(() => {
+                body.style.transition = 'filter 0.5s ease';
+                body.style.filter = 'brightness(1)';
+            }, 100);
+            
+            showToast('Special effect activated!');
+        }
+        
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+        
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                createRandomParticle();
+            }
+        }
+        
+        function createRandomParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 10 + 5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            // Remove particle after animation completes
+            setTimeout(() => {
+                particle.remove();
+            }, 20000);
+        }
+        
+        function createFloatingParticle(element) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const rect = element.getBoundingClientRect();
+            const size = 10;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${rect.left + rect.width / 2 - size / 2}px`;
+            particle.style.top = `${rect.top + rect.height / 2 - size / 2}px`;
+            
+            particle.style.animation = 'float 2s ease-out forwards';
+            
+            particlesContainer.appendChild(particle);
+            
+            // Remove particle after animation completes
+            setTimeout(() => {
+                particle.remove();
+            }, 2000);
+        }
+        
+        // Event Listeners
+        plusButton.addEventListener('click', increment);
+        minusButton.addEventListener('click', decrement);
+        resetButton.addEventListener('click', reset);
+        switchButton.addEventListener('click', toggleTheme);
+        light1Button.addEventListener('click', specialEffect);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case '+':
+                case '=':
+                    increment();
+                    break;
+                case '-':
+                case '_':
+                    decrement();
+                    break;
+                case '0':
+                case 'r':
+                case 'R':
+                    reset();
+                    break;
+                case 't':
+                case 'T':
+                    toggleTheme();
+                    break;
+                case 's':
+                case 'S':
+                    specialEffect();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
